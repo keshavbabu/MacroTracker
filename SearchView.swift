@@ -13,17 +13,6 @@ struct SearchView: View {
                     })
                 }
             }.padding()
-            /*
-             Button {
-             Task {
-             print("Searching for " + searchText)
-             foodlist.populate(query:searchText, completion: {(str) in
-             print(str)
-             })
-             }
-             } label: {
-             Text("Search")
-             }*/
             List{
                 ForEach(foodlist.foods){food in
                     //Text(food.description)
