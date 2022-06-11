@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 struct SearchView: View {
     @EnvironmentObject var foodlist: FoodList
+    @EnvironmentObject var log: Log
     @State var searchText: String = ""
     var body: some View {
         VStack{
@@ -15,8 +16,7 @@ struct SearchView: View {
             }.padding()
             List{
                 ForEach(foodlist.foods){food in
-                    //Text(food.description)
-                    FoodRow(food: food)
+                    FoodRow(food: food).environmentObject(log)
                 }
             }.toolbar{
                 ToolbarItem{
