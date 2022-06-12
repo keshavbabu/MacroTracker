@@ -10,6 +10,9 @@ struct MyApp: App {
             ContentView(searchText: "")
                     .environmentObject(log)
                     .environmentObject(foodlist)
+                    .onAppear{
+                        
+                    }
         }
     }
 }

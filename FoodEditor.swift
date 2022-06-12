@@ -2,26 +2,21 @@ import SwiftUI
 
 struct FoodEditor: View{
     @EnvironmentObject var log: Log
-    var food: Food
+    @State var food: Food
     @Environment(\.dismiss) var dismiss
-    @State private var title  = ""
-    @State private var description = ""
     var body: some View{
+        NavigationView{
         Form{
-            Section("idk"){
-                TextField(
-                    "Task Title",
-                    text: $title
-                )
-                TextField(
-                    "Task Description",
-                    text: $description
-                )
+            Section("Quantity"){
+                Stepper(value: $food.quantity, in: 1...999) {
+                    Text("\(Int(food.quantity))")
+                }
             }
             Button("Save") {
                 log.replaceFood(with: food)
                 dismiss()
             }
+        }.navigationTitle("FoodEditor")
         }
     }
 }

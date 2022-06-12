@@ -11,6 +11,7 @@ class Log: ObservableObject{
             days = try JSONDecoder().decode([Day].self, from: data)
         } catch {
             days = []
+            initEmpty()
         }
     }
 }
@@ -29,14 +30,17 @@ extension Log{
             print("Unable to save data")
         }
     }
-    func addDay(day: Day){
-        days.insert(day, at: 0)
-    }
-    func addFood(food: Food){
+    func initEmpty(){
         if(days.count == 0){
             let day = Day(date: Date())
             addDay(day: day)
         }
+    }
+    func addDay(day: Day){
+        days.insert(day, at: 0)
+    }
+    func addFood(food: Food){
+        
         if(!Calendar.current.isDateInToday(days[0].date)){
             addDay(day: Day(date: Date()))
         }

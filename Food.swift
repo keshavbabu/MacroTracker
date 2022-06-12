@@ -4,7 +4,7 @@ struct Food: Identifiable, Codable, Equatable{
     let id: String
     let description: String
     let category: String
-    let quantity: Double
+    var quantity: Double
     let product: String
     let supplier: String
     let nutrient_data: [Nutrient]?

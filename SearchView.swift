@@ -10,7 +10,7 @@ struct SearchView: View {
                 Task {
                     print("Searching for " + searchText)
                     foodlist.populate(query:searchText, completion: {(str) in
-                        print(str)
+                        
                     })
                 }
             }.padding()
