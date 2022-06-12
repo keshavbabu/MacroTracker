@@ -7,12 +7,9 @@ struct MyApp: App {
     @StateObject var log = Log()
     var body: some Scene {
         WindowGroup{
-            NavigationView{
-                ContentView(searchText: "")
+            ContentView(searchText: "")
                     .environmentObject(log)
                     .environmentObject(foodlist)
-                    .navigationTitle("Home")
-            }
         }
     }
 }

@@ -16,7 +16,7 @@ struct SearchView: View {
             }.padding()
             List{
                 ForEach(foodlist.foods){food in
-                    FoodRow(food: food).environmentObject(log)
+                    FoodRow(food: food, tappable: true).environmentObject(log)
                 }
             }.toolbar{
                 ToolbarItem{

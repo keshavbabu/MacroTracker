@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Food: Identifiable, Codable{
+struct Food: Identifiable, Codable, Equatable{
     let id: String
     let description: String
     let category: String
@@ -14,7 +14,7 @@ struct Food: Identifiable, Codable{
     let units: [String]
 }
 
-struct Nutrient: Identifiable, Codable{
+struct Nutrient: Identifiable, Codable, Equatable{
     let id = UUID()
     let nutrient: String
     let value: Double

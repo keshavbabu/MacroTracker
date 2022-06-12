@@ -2,6 +2,17 @@ import SwiftUI
 
 class Log: ObservableObject{
     @Published var days = [Day]()
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    
+    init() {
+        do {
+            let savePath = paths[0].appendingPathComponent("SavedTasks")
+            let data = try Data(contentsOf: savePath)
+            days = try JSONDecoder().decode([Day].self, from: data)
+        } catch {
+            days = []
+        }
+    }
 }
 
 struct CodableLog: Codable{
@@ -9,27 +20,41 @@ struct CodableLog: Codable{
 }
 
 extension Log{
-    func read(){
-        
-    }
-    func save(){
-        var codelog = CodableLog()
-        codelog.days = self.days
-        let jsonEncoder = JSONEncoder()
-        let jsonData = try! jsonEncoder.encode(codelog)
-        let json = String(data: jsonData, encoding: String.Encoding.utf16)
-        print(json!)
+    func save() {
+        do {
+            let savePath = paths[0].appendingPathComponent("SavedTasks")
+            let data = try JSONEncoder().encode(days)
+            try data.write(to: savePath, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("Unable to save data")
+        }
     }
     func addDay(day: Day){
         days.insert(day, at: 0)
     }
-    func getDay() -> Day{
-        return days[0]
+    func addFood(food: Food){
+        if(days.count == 0){
+            let day = Day(date: Date())
+            addDay(day: day)
+        }
+        if(!Calendar.current.isDateInToday(days[0].date)){
+            addDay(day: Day(date: Date()))
+        }
+        days[0].food.append(food)
+        save()
     }
-    func setDay(day: Day){
-        
+    func remove(food: Food){
+        if let index = days[0].food.firstIndex(of: food) {
+            days[0].food.remove(at: index)
+        }
+        save()
     }
-    func getToday(){
-        
+    func replaceFood(with: Food){
+        if let offset = days[0].food.firstIndex(where: {$0.id == with.id}) {
+            days[0].food[offset] = with;
+            print("replaced")
+        } else {
+            print("bruh")
+        }
     }
 }
