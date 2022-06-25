@@ -12,8 +12,9 @@ struct FoodRow: View {
             Text(food.product)
         }.onTapGesture {
             if(tappable){
-                //call fixFood here and add the resulting food after calling the Food API
-                log.addFood(food: food)
+                log.fixFood(food: food, completion: {food in
+                    log.addFood(food: food!)
+                })
             }
         }
         

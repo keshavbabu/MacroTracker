@@ -29,14 +29,13 @@ class Log: ObservableObject{
 
 
 extension Log{
-    func fixFood(food: Food, completion:@escaping((_ str:String?)->())) -> Food{
+    func fixFood(food: Food, completion:@escaping((_ str:Food?)->())){
         let url = "https://nutrition-api.esha.com/food/" + food.id
         var request = URLRequest(url: URL(string: url)!)
         request.setValue("9b1bf119caf94e188f11db4d1baec704", forHTTPHeaderField: "Ocp-Apim-Subscription-Key")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-            //print((try? JSONSerialization.jsonObject(with: data!)) as? [String: Any])
             if error != nil {
                 print("error=\(String(describing: error))")
                 completion(nil)
@@ -44,9 +43,10 @@ extension Log{
             }
             do {
                 let decoder = JSONDecoder()
-                let queryResult = try decoder.decode(QueryResult.self, from: data!)
+                let queryResult = try decoder.decode(Food.self, from: data!)
                 DispatchQueue.main.async{
-                    completion(queryResult.query)
+                    completion(queryResult)
+                    
                 }
                 
             } catch  {
@@ -55,7 +55,6 @@ extension Log{
             }
         }
         task.resume()
-        return food
     }
     func getGoal(of: String) -> Double{
         switch(of){
@@ -74,17 +73,45 @@ extension Log{
     func getCurrent(of: String) -> Double{
         switch(of){
         case "C":
-            return round((goal.calories * (goal.carbohydratesPercent * 0.01) / 4.0))
-        case "F":
-            return round((goal.calories * (goal.fatsPercent * 0.01) / 9.0))
-        case "P":
-            return round((goal.calories * (goal.proteinPercent * 0.01) / 4.0))
-        case "cal":
-            //var calories = 0.0;
+            var carbs = 0.0;
             for food in days[currentDay].food{
-                
+                for nutrient in food.nutrient_data!{
+                    if(nutrient.nutrient == "urn:uuid:975a8d10-8650-4e0c-9a8f-7f4aaa6ae9e2"){
+                        carbs += Double(nutrient.value) * Double(food.quantity)
+                    }
+                }
             }
-            return goal.calories
+            return carbs
+        case "F":
+            var fats = 0.0;
+            for food in days[currentDay].food{
+                for nutrient in food.nutrient_data!{
+                    if(nutrient.nutrient == "urn:uuid:589294dc-3dcc-4b64-be06-c07e7f65c4bd"){
+                        fats += Double(nutrient.value) * Double(food.quantity)
+                    }
+                }
+            }
+            return fats
+        case "P":
+            var protein = 0.0;
+            for food in days[currentDay].food{
+                for nutrient in food.nutrient_data!{
+                    if(nutrient.nutrient == "urn:uuid:666ae7df-af65-4d55-8d5f-996e6cc384ca"){
+                        protein += Double(nutrient.value) * Double(food.quantity)
+                    }
+                }
+            }
+            return protein
+        case "cal":
+            var calories = 0.0;
+            for food in days[currentDay].food{
+                for nutrient in food.nutrient_data!{
+                    if(nutrient.nutrient == "urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9"){
+                        calories += Double(nutrient.value) * Double(food.quantity)
+                    }
+                }
+            }
+            return calories
         default:
           return 0.0
         }
@@ -122,9 +149,6 @@ extension Log{
         save()
     }
     func addFood(food: Food){
-        if(!Calendar.current.isDateInToday(days[currentDay].date)){
-            addDay(day: Day(date: Date()))
-        }
         days[currentDay].food.append(food)
         save()
     }

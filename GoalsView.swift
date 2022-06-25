@@ -3,7 +3,6 @@ import SwiftUI
 struct GoalsView: View {
     @EnvironmentObject var log: Log
     var body: some View {
-        Form{
             List{
                 HStack{
                     Text("Calories")
@@ -28,9 +27,9 @@ struct GoalsView: View {
                     Spacer()
                     Text(Int(log.goal.proteinPercent).description + "%")
                 }
-                
+                Button("Edit"){
+                    
+                }
             }
-        }    
-        
     }
 }
