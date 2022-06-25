@@ -12,6 +12,7 @@ struct Food: Identifiable, Codable, Equatable{
     let characteristics: [String]?
     let groups: [String]
     let units: [String]
+    let discontinued: Bool?
 }
 
 struct Nutrient: Identifiable, Codable, Equatable{

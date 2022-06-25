@@ -3,14 +3,13 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var foodlist: FoodList
     @EnvironmentObject var log: Log
-    @State var editFood = false
     @State var searchText: String
     var body: some View {
         NavigationView{
             List{
-            SummaryView()
+            SummaryView(calories: 1000.0, protein: 0.9, carbohydrates: 0.5, fat: 0.3)
                 .environmentObject(log)
-                .frame(height: 90, alignment: .center)
+                .frame(height: 150, alignment: .center)
                 .toolbar{
                 ToolbarItem{
                     NavigationLink("Search", destination: {
@@ -20,31 +19,34 @@ struct ContentView: View {
                             .navigationTitle("Search")
                     })
                 }
-            }
-                ForEach(log.days[0].food){food in
-                    ZStack{
-                        FoodRow(food: food, tappable: false)
+                    ToolbarItem(placement: .navigationBarLeading){
+                        NavigationLink("Log", destination: {
+                            LogView()
+                                .environmentObject(log)
+                                .navigationTitle("Log")
+                        })
                     }
-                    .swipeActions{
-                        Button(role: .destructive) {
-                            withAnimation {
-                                log.remove(food: food)
-                            }
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        Button(role: .none){
-                            editFood = true
-                        }label: {
-                            Label("Edit", systemImage: "edit")
-                        }
-                    }.sheet(isPresented: $editFood){
-                        FoodEditor(food: food)
+                    ToolbarItem(placement: .bottomBar){
+                        NavigationLink("Goals", destination: {
+                            GoalsView()
+                                .environmentObject(log)
+                                .navigationTitle("Goals")
+                        })
+                    }
+                    // DEBUG MENU:
+                    // REMOVE
+                    ToolbarItem(placement: .bottomBar){
+                        NavigationLink("Debug", destination: {
+                            DebugView(date: Date.now)
+                                .environmentObject(log)
+                                .navigationTitle("Debug")
+                        })
                     }
                     
-                }
+            }
+                TodayView()
+                    .environmentObject(log)
             }.navigationTitle("Home")
         }
-        
     }
 }

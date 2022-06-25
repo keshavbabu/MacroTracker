@@ -15,8 +15,10 @@ extension FoodList{
         let url = "https://nutrition-api.esha.com/foods?query="+query.lowercased().replacingOccurrences(of: " ", with: "%20").filter("abcdefghijklmnopqrstuvwxyz-%1234567890".contains)+"&start=0&count=25&spell=true"
         var request = URLRequest(url: URL(string: url)!)
         request.setValue("9b1bf119caf94e188f11db4d1baec704", forHTTPHeaderField: "Ocp-Apim-Subscription-Key")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
+            //print((try? JSONSerialization.jsonObject(with: data!)) as? [String: Any])
             if error != nil {
                 print("error=\(String(describing: error))")
                 completion(nil)
